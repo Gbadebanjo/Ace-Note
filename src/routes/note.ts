@@ -1,21 +1,15 @@
-import express from 'express';
+import express, { Request, Response, NextFunction} from 'express';
+import { addNote, deleteNote, getAllNotes, updateNote } from '../controller/note';
 const router = express.Router();
 
+//Create note
+router.post('/', addNote );
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    res.send("respond with a resource from note");
+router.get('/', getAllNotes );
 //   res.render('index', { title: 'Express' });
-});
-router.post('/', function (req, res, next) {
-    res.send("respond with resource from note")
-});
 
-router.put('/', function (req, res, next) {
-    res.send("respond with resource from note")
-});
+router.put('/:id', updateNote )
 
-router.delete('/', function (req, res, next) {
-    res.send("respond with resource from note")
-});
+router.delete('/:id', deleteNote)
 
 export default router;

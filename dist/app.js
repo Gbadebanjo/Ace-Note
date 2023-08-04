@@ -3,15 +3,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv_1 = require("dotenv");
 const http_errors_1 = __importDefault(require("http-errors"));
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const morgan_1 = __importDefault(require("morgan"));
+const db_config_1 = __importDefault(require("./config/db.config"));
 const index_1 = __importDefault(require("./routes/index"));
 const users_1 = __importDefault(require("./routes/users"));
 const note_1 = __importDefault(require("./routes/note"));
+db_config_1.default.sync()
+    .then(() => {
+    console.log('database synced');
+})
+    .catch((err) => {
+    console.log('err syncing db', err);
+});
 const app = (0, express_1.default)();
+(0, dotenv_1.config)();
+// console.log(process.env.PORT);
+// console.log(process.env.NODE_ENV);
 // view engine setup
 app.set('views', path_1.default.join(__dirname, '..', 'views'));
 app.set('view engine', 'jade');

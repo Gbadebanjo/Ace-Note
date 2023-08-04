@@ -4,19 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const note_1 = require("../controller/note");
 const router = express_1.default.Router();
+//Create note
+router.post('/', note_1.addNote);
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.send("respond with a resource from note");
-    //   res.render('index', { title: 'Express' });
-});
-router.post('/', function (req, res, next) {
-    res.send("respond with resource from note");
-});
-router.put('/', function (req, res, next) {
-    res.send("respond with resource from note");
-});
-router.delete('/', function (req, res, next) {
-    res.send("respond with resource from note");
-});
+router.get('/', note_1.getAllNotes);
+//   res.render('index', { title: 'Express' });
+router.put('/:id', note_1.updateNote);
+router.delete('/:id', note_1.deleteNote);
 exports.default = router;
