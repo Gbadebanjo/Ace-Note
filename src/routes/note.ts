@@ -1,15 +1,17 @@
-import express, { Request, Response, NextFunction} from 'express';
-import { addNote, deleteNote, getAllNotes, updateNote } from '../controller/note';
+import express from 'express';
+import { createNote, deleteNote, getAllNotes, updateNote } from '../controller/note';
+import { auth } from "../middlewares/auth"
 const router = express.Router();
 
-//Create note
-router.post('/', addNote );
 /* GET home page. */
 router.get('/', getAllNotes );
-//   res.render('index', { title: 'Express' });
 
-router.put('/:id', updateNote )
+//Create note
+router.post('/createNote', createNote );
 
-router.delete('/:id', deleteNote)
+
+router.put('/update', updateNote );
+
+router.delete('/delete', deleteNote)
 
 export default router;

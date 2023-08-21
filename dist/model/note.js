@@ -28,6 +28,9 @@ Note.init({
         type: sequelize_1.DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
+    },
+    userId: {
+        type: sequelize_1.DataTypes.STRING,
     }
 }, {
     sequelize: db_config_1.default,

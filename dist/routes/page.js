@@ -22,8 +22,13 @@ router.get('/login', function (req, res, next) {
 router.get('/about', function (req, res, next) {
     res.render("About");
 });
-// // Handle 404
-// router.get('*', function(req, res) {
-//   res.status(404).render("404")
-// })
+// /users/dashboard
+router.get('users/dashboard', function (req, res, next) {
+    console.log('calling get login');
+    res.render("Dashboard");
+});
+//Handle 404
+router.get('*', function (req, res) {
+    res.status(404).render("404");
+});
 exports.default = router;

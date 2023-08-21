@@ -9,38 +9,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteNote = exports.updateNote = exports.getAllNotes = exports.addNote = void 0;
+exports.deleteNote = exports.updateNote = exports.getAllNotes = exports.createNote = void 0;
 const uuid_1 = require("uuid");
 const note_1 = require("../model/note");
 //Create note request
-function addNote(req, res) {
+function createNote(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const id = (0, uuid_1.v4)();
-        const { title, description, dueDate, status } = req.body;
-        const newNote = yield note_1.Note.create({
-            id,
-            title,
-            description,
-            dueDate,
-            status,
-        });
-        res.status(201).json({
-            data: {
-                newNote,
-            },
-        });
+        try {
+            // To get id of user creating note
+            const verified = req.userKey;
+            const id = (0, uuid_1.v4)();
+            // const { title, description, dueDate, status } = req.body;
+            const newNote = yield note_1.Note.create(Object.assign(Object.assign({ id }, req.body), { userId: verified.id }));
+            res.status(201).json({
+                data: {
+                    newNote,
+                },
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
     });
 }
-exports.addNote = addNote;
+exports.createNote = createNote;
 // Read note request
 function getAllNotes(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        let allNote = yield note_1.Note.findAll();
-        res.status(201).json({
-            data: {
-                allNote,
-            },
-        });
+        try {
+            let allNote = yield note_1.Note.findAll();
+            // A more advance method to the above => let allNote = await Note.findAndCountAll();
+            res.status(201).json({
+                data: {
+                    allNote,
+                },
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
     });
 }
 exports.getAllNotes = getAllNotes;

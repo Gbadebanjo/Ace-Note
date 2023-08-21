@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_1 = require("sequelize");
 const db_config_1 = __importDefault(require("../config/db.config"));
+const note_1 = require("./note");
 class User extends sequelize_1.Model {
 }
 exports.User = User;
@@ -28,8 +29,14 @@ User.init({
     password: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
+    },
+    isAdmin: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: false,
     }
 }, {
     sequelize: db_config_1.default,
     modelName: "Users",
 });
+User.hasMany(note_1.Note, { foreignKey: 'userId', as: 'Notes' });
+note_1.Note.belongsTo(User, { foreignKey: 'userId', as: 'Users' });

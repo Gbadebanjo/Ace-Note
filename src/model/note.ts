@@ -1,12 +1,14 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../config/db.config";
+import { v4 as uuidv4 } from "uuid";
 
 interface NoteAttributes {
     id: string;
-    title: string;
     description: string;
-    status: number;
     dueDate: string;
+    title: string;
+    status: string;
+    userId: string;
 }
 
 export class Note extends Model<NoteAttributes> {}
@@ -29,6 +31,9 @@ Note.init({
         type: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
+    },
+    userId: {
+        type: DataTypes.STRING,
     }
 },
 {
