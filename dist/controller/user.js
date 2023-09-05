@@ -50,9 +50,6 @@ function register(req, res) {
         }
         catch (error) {
             res.render('error', { error, message: error.message });
-            // res.status(500).json({
-            //   message: "failed to signup user",
-            // });
         }
     });
 }
@@ -92,7 +89,7 @@ function login(req, res) {
             return res.redirect("/users/dashboard");
         }
         catch (error) {
-            res.status(500).render('error', { errormesaage: error.message });
+            res.status(500).render('error', { errormessage: error.message });
         }
     });
 }
@@ -142,9 +139,11 @@ exports.updateUser = updateUser;
 //Dashboard controller
 function dashboard(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log('calling dashboard...');
         const usersNote = yield getNotesById(req.userKey.id);
         res.render("Dashboard", {
             username: req.userKey.user.username,
+            userId: req.userKey.id,
             usersNote
         });
     });

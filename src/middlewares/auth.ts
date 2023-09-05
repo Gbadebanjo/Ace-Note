@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../model/user";
 
+
+
 /**
  * Middleware function to authenticate user by verifying token.
  * If token is valid, sets the `req.user` property to the decoded user object.

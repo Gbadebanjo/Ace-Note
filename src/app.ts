@@ -8,7 +8,7 @@ import db from "./config/db.config";
 import * as dotenv from "dotenv";
 import { auth } from "./middlewares/auth";
 
-
+import { passportSetup } from "./middlewares/passport";
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
 import noteRouter from "./routes/note";
@@ -25,6 +25,7 @@ db.sync({force:false})
   });
 const app = express();
 config();
+passportSetup();
 // console.log(process.env.PORT);
 // console.log(process.env.NODE_ENV);
 // view engine setup

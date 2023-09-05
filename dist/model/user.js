@@ -28,11 +28,16 @@ User.init({
     },
     password: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     isAdmin: {
         type: sequelize_1.DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
+    },
+    googleId: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
     }
 }, {
     sequelize: db_config_1.default,

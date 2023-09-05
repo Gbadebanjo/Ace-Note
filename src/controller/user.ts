@@ -43,9 +43,6 @@ export async function register(req: Request, res: Response) {
     return res.redirect('/login');
   } catch (error: any) {
     res.render('error', { error, message: error.message})
-    // res.status(500).json({
-      //   message: "failed to signup user",
-      // });
     }
   }
   
@@ -87,7 +84,7 @@ export async function register(req: Request, res: Response) {
       // return res.json({message: 'login', user, token})
      return res.redirect("/users/dashboard");
     } catch (error: any) {
-      res.status(500).render('error', { errormesaage: error.message });
+      res.status(500).render('error', { errormessage: error.message });
     }
   }
 
@@ -129,9 +126,11 @@ export async function updateUser(req: Request, res: Response) {
 
 //Dashboard controller
 export async  function dashboard(req: Request, res: Response) {  
+  console.log('calling dashboard...')
   const usersNote = await getNotesById(req.userKey.id);
   res.render("Dashboard", {
    username: req.userKey.user.username,
+   userId: req.userKey.id,
    usersNote
   })
 

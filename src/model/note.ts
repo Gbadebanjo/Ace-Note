@@ -1,13 +1,16 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../config/db.config";
-import { v4 as uuidv4 } from "uuid";
 
+enum NoteStatus {
+    Pending = "Pending",
+    Completed = "Completed",
+  }
 interface NoteAttributes {
     id: string;
     description: string;
-    dueDate: string;
+    dueDate: Date;
     title: string;
-    status: string;
+    status: NoteStatus;
     userId: string;
 }
 
@@ -21,12 +24,12 @@ Note.init({
         type: DataTypes.STRING,
     },
     dueDate: {
-        type: DataTypes.STRING,
-    },
+        type: DataTypes.DATE,
+      },
     status: {
-        type: DataTypes.ENUM("Pending","Completed"),
+        type: DataTypes.ENUM('Pending', 'Completed'),
         allowNull: false,
-    },
+      },
     id: {
         type: DataTypes.UUIDV4,
         primaryKey: true,

@@ -6,6 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Note = void 0;
 const sequelize_1 = require("sequelize");
 const db_config_1 = __importDefault(require("../config/db.config"));
+var NoteStatus;
+(function (NoteStatus) {
+    NoteStatus["Pending"] = "Pending";
+    NoteStatus["Completed"] = "Completed";
+})(NoteStatus || (NoteStatus = {}));
 class Note extends sequelize_1.Model {
 }
 exports.Note = Note;
@@ -18,10 +23,10 @@ Note.init({
         type: sequelize_1.DataTypes.STRING,
     },
     dueDate: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.DATE,
     },
     status: {
-        type: sequelize_1.DataTypes.ENUM("Pending", "Completed"),
+        type: sequelize_1.DataTypes.ENUM('Pending', 'Completed'),
         allowNull: false,
     },
     id: {

@@ -8,6 +8,7 @@
     "build": "tsc -w"
   },
   "dependencies": {
+    "@types/passport": "^1.0.12",
     "@types/sequelize": "^4.28.15",
     "@types/uuid": "^9.0.2",
     "bcryptjs": "^2.4.3",
@@ -21,6 +22,8 @@
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.1",
     "morgan": "~1.9.1",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "sequelize": "^6.32.1",
     "sqlite3": "^5.1.6",
     "uuid": "^9.0.0"

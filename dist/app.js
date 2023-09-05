@@ -11,6 +11,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const morgan_1 = __importDefault(require("morgan"));
 const db_config_1 = __importDefault(require("./config/db.config"));
 const auth_1 = require("./middlewares/auth");
+const passport_1 = require("./middlewares/passport");
 const index_1 = __importDefault(require("./routes/index"));
 const users_1 = __importDefault(require("./routes/users"));
 const note_1 = __importDefault(require("./routes/note"));
@@ -25,6 +26,7 @@ db_config_1.default.sync({ force: false })
 });
 const app = (0, express_1.default)();
 (0, dotenv_1.config)();
+(0, passport_1.passportSetup)();
 // console.log(process.env.PORT);
 // console.log(process.env.NODE_ENV);
 // view engine setup

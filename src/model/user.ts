@@ -6,8 +6,9 @@ interface UserAttributes {
   id: string;
   username: string;
   email: string;
-  password: string;
+  password?: string;
   isAdmin: boolean;
+  googleId: string;
 }
 
 export class User extends Model<UserAttributes> {}
@@ -31,11 +32,16 @@ User.init(
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     isAdmin: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
+    },
+    googleId: { 
+        type: DataTypes.STRING,
+        allowNull: true,
     }
   },
   {

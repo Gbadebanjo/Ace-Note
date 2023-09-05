@@ -9,23 +9,48 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteNote = exports.updateNote = exports.getAllNotes = exports.createNote = void 0;
+exports.deleteNote = exports.updateNote = exports.getAllNotes = exports.createNote = exports.viewNote = void 0;
 const uuid_1 = require("uuid");
 const note_1 = require("../model/note");
+function viewNote(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            console.log('calling viewNote function');
+            // const note = await Note.findOne( { id: req.params })
+            const note = yield note_1.Note.findByPk(req.params.id);
+            if (note) {
+                res.render('view-note', {
+                    userId: note.dataValues.userId,
+                    noteID: req.params.id,
+                    note,
+                    id: note.dataValues.id
+                    // layout: '../views/view-note',
+                });
+            }
+            else {
+                res.status(404).json({ message: 'Note not found' });
+            }
+        }
+        catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    });
+}
+exports.viewNote = viewNote;
+;
 //Create note request
 function createNote(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log('calling createNote fxn');
+        if (req.method === 'GET')
+            return res.render('create-note');
         try {
             // To get id of user creating note
             const verified = req.userKey;
             const id = (0, uuid_1.v4)();
             // const { title, description, dueDate, status } = req.body;
             const newNote = yield note_1.Note.create(Object.assign(Object.assign({ id }, req.body), { userId: verified.id }));
-            res.status(201).json({
-                data: {
-                    newNote,
-                },
-            });
+            return res.redirect("/users/dashboard");
         }
         catch (err) {
             console.log(err);
@@ -59,8 +84,9 @@ function updateNote(req, res) {
         const update = req.body;
         if (note) {
             Object.assign(note, Object.assign(Object.assign({}, note), update));
+            console.log('updated note: ', note);
             yield note.save();
-            return res.redirect(200, `/note/${id}`);
+            return res.redirect("/users/dashboard");
         }
         else {
             res.json({ msg: "Note not found" });
@@ -71,11 +97,12 @@ exports.updateNote = updateNote;
 // Delete request
 function deleteNote(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log('calling delete');
         const id = req.params.id;
         const note = yield note_1.Note.findOne({ where: { id: id } });
         if (note) {
             yield note.destroy();
-            res.json({ msg: "Note deleted" });
+            res.redirect("/users/dashboard");
         }
         else {
             res.status(404).send("Note not found");
