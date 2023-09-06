@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User, } from "../model/user";
+import { User } from "../model/user";
 import { Note } from "../model/note";
 import { v4 as uuidv4 } from "uuid";
 import { signupUserSchema, options, loginUserSchema } from "../utils/utils";
@@ -21,16 +21,18 @@ export async function register(req: Request, res: Response) {
     //Validate with Joi
     const validationResult = signupUserSchema.validate(req.body, options);
     if (validationResult.error) {
-      return res.status(400).json({ Error: validationResult.error.details[0].message });
+      return res
+        .status(400)
+        .json({ Error: validationResult.error.details[0].message });
     }
-    
+
     //Check if user exist in database
     const { email, password } = req.body;
-    const user = await User.findOne({where: { email } });
+    const user = await User.findOne({ where: { email } });
     if (user) {
       return res.json({ message: "email already exist" });
     }
-   
+
     //Hash password
     const passwordHarsh = await bcrypt.hash(password, 10);
     const newUser = await User.create({
@@ -40,56 +42,62 @@ export async function register(req: Request, res: Response) {
       isAdmin,
     });
     // res.json({msg: 'registered!', newUser})
-    return res.redirect('/login');
+    return res.redirect("/login");
   } catch (error: any) {
-    res.render('error', { error, message: error.message})
-    }
+    res.render("error", { error, message: error.message });
   }
-  
-  //Login User
-  export async function login(req: Request, res: Response) {
-    console.log('calling login controller')
-    try {
-       //Validate with Joi
-      const validationResult = loginUserSchema.validate(req.body, options);
-      if (validationResult.error) {
-        return res.status(400).json({ Error: validationResult.error.details[0].message });
-      }
-      
-      // To find a user by email
-      const { email, password } = req.body;
-      const user = (await User.findOne({ where: { email } })) as unknown as {[key: string]: string;};
-      if (!user) {
-        return res.status(400).json({ message: "Invalid login details" });
-      }
-  
-      // Compare the provided password with the hashed password in the database
-      const validUser = await bcrypt.compare(password, user.password);
-      if (!validUser) {
-        return res.status(400).json({ Error: "Invalid email/password" });
-      }
-  
-      //give user a token after successful login
-      const { id } = user;
-      const expiresIn = 3 * 60 * 60; //seconds
-      const token = jwt.sign({ id, isAdmin: user.isAdmin }, jwtsecret, { expiresIn });
-  
-      //save token as a cookie
-      res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: expiresIn * 1000,  // in milliseconds
-      });
-  
-      console.log(req.cookies);
-      // return res.json({message: 'login', user, token})
-     return res.redirect("/users/dashboard");
-    } catch (error: any) {
-      res.status(500).render('error', { errormessage: error.message });
+}
+
+//Login User
+export async function login(req: Request, res: Response) {
+  console.log("calling login controller");
+  try {
+    //Validate with Joi
+    const validationResult = loginUserSchema.validate(req.body, options);
+    if (validationResult.error) {
+      return res
+        .status(400)
+        .json({ Error: validationResult.error.details[0].message });
     }
+
+    // To find a user by email
+    const { email, password } = req.body;
+    const user = (await User.findOne({ where: { email } })) as unknown as {
+      [key: string]: string;
+    };
+    if (!user) {
+      return res.status(400).json({ message: "Invalid login details" });
+    }
+
+    // Compare the provided password with the hashed password in the database
+    const validUser = await bcrypt.compare(password, user.password);
+    if (!validUser) {
+      return res.status(400).json({ Error: "Invalid email/password" });
+    }
+
+    //give user a token after successful login
+    const { id } = user;
+    const expiresIn = 3 * 60 * 60; //seconds
+    const token = jwt.sign({ id, isAdmin: user.isAdmin }, jwtsecret, {
+      expiresIn,
+    });
+
+    //save token as a cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: expiresIn * 1000, // in milliseconds
+    });
+
+    console.log(req.cookies);
+    // return res.json({message: 'login', user, token})
+    return res.redirect("/users/dashboard");
+  } catch (error: any) {
+    res.status(500).render("error", { errormessage: error.message });
   }
+}
 
 // Display allUsers
-  export async function displayAllUsers(req: Request, res: Response) {
+export async function displayAllUsers(req: Request, res: Response) {
   let allUsers = await User.findAll();
   res.status(201).json({
     data: {
@@ -125,16 +133,14 @@ export async function updateUser(req: Request, res: Response) {
 }
 
 //Dashboard controller
-export async  function dashboard(req: Request, res: Response) {  
-  console.log('calling dashboard...')
+export async function dashboard(req: Request, res: Response) {
+  console.log("calling dashboard...");
   const usersNote = await getNotesById(req.userKey.id);
   res.render("Dashboard", {
-   username: req.userKey.user.username,
-   userId: req.userKey.id,
-   usersNote
-  })
-
-
+    username: req.userKey.user.username,
+    userId: req.userKey.id,
+    usersNote,
+  });
 }
 
 // GET user's notes
@@ -143,21 +149,18 @@ export async function usersNote(req: Request, res: Response) {
     const userId = req.userKey.user.id;
     // Find all notes associated with the user
     const userNotes = await Note.findAll({
-      where: { userId }, 
+      where: { userId },
     });
 
     res.status(200).json(userNotes);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
-};
-
-async function getNotesById(id:string){
-  const notes = await Note.findAll({
-    where: { userId: id }, 
-  });
-  return notes
 }
 
-
-
+async function getNotesById(id: string) {
+  const notes = await Note.findAll({
+    where: { userId: id },
+  });
+  return notes;
+}

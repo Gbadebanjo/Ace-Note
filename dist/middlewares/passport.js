@@ -4,11 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.passportSetup = void 0;
-// import session from "express-session";
 const passport_1 = __importDefault(require("passport"));
 const user_1 = require("../model/user");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const uuid_1 = require("uuid");
+// serialize user
+passport_1.default.serializeUser((user, done) => {
+    done(null, user.id);
+});
+// deserialize user
+passport_1.default.deserializeUser((id, done) => {
+    user_1.User.findByPk(id).then((user) => {
+        done(null, user);
+    });
+});
 const passportSetup = () => {
     passport_1.default.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
@@ -17,10 +26,11 @@ const passportSetup = () => {
     }, (accessToken, refreshToken, profile, done) => {
         try {
             //Check if user already exists in our db with the given profile ID
-            user_1.User.findOne({ googleId: profile.id }).then((currentUser) => {
+            user_1.User.findOne({ where: { googleId: profile.id } }).then((currentUser) => {
                 if (currentUser) {
                     //if we already have a record with the given profile ID
                     done(null, currentUser);
+                    console.log("user is: ", currentUser);
                 }
                 else {
                     //if not, create a new user
@@ -34,6 +44,7 @@ const passportSetup = () => {
                         .save()
                         .then((newUser) => {
                         console.log("new user created: " + newUser);
+                        done(null, newUser);
                     });
                 }
             });

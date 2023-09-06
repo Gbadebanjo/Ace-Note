@@ -34,7 +34,9 @@ function register(req, res) {
             //Validate with Joi
             const validationResult = utils_1.signupUserSchema.validate(req.body, utils_1.options);
             if (validationResult.error) {
-                return res.status(400).json({ Error: validationResult.error.details[0].message });
+                return res
+                    .status(400)
+                    .json({ Error: validationResult.error.details[0].message });
             }
             //Check if user exist in database
             const { email, password } = req.body;
@@ -46,10 +48,10 @@ function register(req, res) {
             const passwordHarsh = yield bcryptjs_1.default.hash(password, 10);
             const newUser = yield user_1.User.create(Object.assign(Object.assign({}, req.body), { password: passwordHarsh, id: (0, uuid_1.v4)(), isAdmin }));
             // res.json({msg: 'registered!', newUser})
-            return res.redirect('/login');
+            return res.redirect("/login");
         }
         catch (error) {
-            res.render('error', { error, message: error.message });
+            res.render("error", { error, message: error.message });
         }
     });
 }
@@ -57,12 +59,14 @@ exports.register = register;
 //Login User
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('calling login controller');
+        console.log("calling login controller");
         try {
             //Validate with Joi
             const validationResult = utils_1.loginUserSchema.validate(req.body, utils_1.options);
             if (validationResult.error) {
-                return res.status(400).json({ Error: validationResult.error.details[0].message });
+                return res
+                    .status(400)
+                    .json({ Error: validationResult.error.details[0].message });
             }
             // To find a user by email
             const { email, password } = req.body;
@@ -78,7 +82,9 @@ function login(req, res) {
             //give user a token after successful login
             const { id } = user;
             const expiresIn = 3 * 60 * 60; //seconds
-            const token = jsonwebtoken_1.default.sign({ id, isAdmin: user.isAdmin }, jwtsecret, { expiresIn });
+            const token = jsonwebtoken_1.default.sign({ id, isAdmin: user.isAdmin }, jwtsecret, {
+                expiresIn,
+            });
             //save token as a cookie
             res.cookie("token", token, {
                 httpOnly: true,
@@ -89,7 +95,7 @@ function login(req, res) {
             return res.redirect("/users/dashboard");
         }
         catch (error) {
-            res.status(500).render('error', { errormessage: error.message });
+            res.status(500).render("error", { errormessage: error.message });
         }
     });
 }
@@ -139,12 +145,12 @@ exports.updateUser = updateUser;
 //Dashboard controller
 function dashboard(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('calling dashboard...');
+        console.log("calling dashboard...");
         const usersNote = yield getNotesById(req.userKey.id);
         res.render("Dashboard", {
             username: req.userKey.user.username,
             userId: req.userKey.id,
-            usersNote
+            usersNote,
         });
     });
 }
@@ -161,12 +167,11 @@ function usersNote(req, res) {
             res.status(200).json(userNotes);
         }
         catch (error) {
-            res.status(500).json({ message: 'Server error' });
+            res.status(500).json({ message: "Server error" });
         }
     });
 }
 exports.usersNote = usersNote;
-;
 function getNotesById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const notes = yield note_1.Note.findAll({

@@ -7,17 +7,34 @@ const express_1 = __importDefault(require("express"));
 const user_1 = require("../controller/user");
 const passport_1 = __importDefault(require("passport"));
 const router = express_1.default.Router();
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const jwtsecret = process.env.JWT_SECRET;
 // users registration
 router.post("/register", user_1.register);
 // users login
 router.post("/login", user_1.login);
 //google login
 router.get("/auth/google", passport_1.default.authenticate("google", {
-    scope: ["profile", "email"]
+    scope: ["profile", "email"],
 }));
 //Call back for google to redirect to
-router.get('/auth/google/redirect', passport_1.default.authenticate('google'), (req, res) => {
-    res.send('you reached the redirect URI');
+router.get("/auth/google/redirect", passport_1.default.authenticate("google"), (req, res) => {
+    // res.redirect("/users/dashboard");
+    //give user a token after successful login
+    // res.send(req.user);
+    const id = req.user.id;
+    const expiresIn = 3 * 60 * 60; //seconds
+    const token = jsonwebtoken_1.default.sign({ id, isAdmin: req.user.isAdmin }, jwtsecret, {
+        expiresIn,
+    });
+    //save token as a cookie
+    res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: expiresIn * 1000, // in milliseconds
+    });
+    console.log(req.cookies);
+    // return res.json({message: 'login', user, token})
+    return res.redirect("/users/dashboard");
 });
 //users logout
 router.get("/users/dashboard/logout", (req, res) => {

@@ -5,8 +5,9 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import db from "./config/db.config";
-import * as dotenv from "dotenv";
 import { auth } from "./middlewares/auth";
+import passport from "passport";
+import session from "express-session";
 
 import { passportSetup } from "./middlewares/passport";
 import indexRouter from "./routes/index";
@@ -16,7 +17,7 @@ import authRouter from "./routes/auth";
 
 // import homePage from "./routes/page"
 
-db.sync({force:false})
+db.sync({ force: false })
   .then(() => {
     console.log("database synced");
   })
@@ -26,6 +27,20 @@ db.sync({force:false})
 const app = express();
 config();
 passportSetup();
+
+// initialize cookie-session to allow us track the user's session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET as string,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // console.log(process.env.PORT);
 // console.log(process.env.NODE_ENV);
 // view engine setup
@@ -38,8 +53,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.use("/", [indexRouter,authRouter]);
-app.use("/users",auth, usersRouter);
+app.use("/", [indexRouter, authRouter]);
+// app.use("/google", [indexRouter, authRouter]);
+app.use("/users", auth, usersRouter);
 app.use("/users/notes", noteRouter);
 // app.use("/homePage", homePage);
 

@@ -11,7 +11,9 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const morgan_1 = __importDefault(require("morgan"));
 const db_config_1 = __importDefault(require("./config/db.config"));
 const auth_1 = require("./middlewares/auth");
-const passport_1 = require("./middlewares/passport");
+const passport_1 = __importDefault(require("passport"));
+const express_session_1 = __importDefault(require("express-session"));
+const passport_2 = require("./middlewares/passport");
 const index_1 = __importDefault(require("./routes/index"));
 const users_1 = __importDefault(require("./routes/users"));
 const note_1 = __importDefault(require("./routes/note"));
@@ -26,7 +28,16 @@ db_config_1.default.sync({ force: false })
 });
 const app = (0, express_1.default)();
 (0, dotenv_1.config)();
-(0, passport_1.passportSetup)();
+(0, passport_2.passportSetup)();
+// initialize cookie-session to allow us track the user's session
+app.use((0, express_session_1.default)({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+}));
+// initialize passport
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
 // console.log(process.env.PORT);
 // console.log(process.env.NODE_ENV);
 // view engine setup
@@ -38,6 +49,7 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
 app.use("/", [index_1.default, auth_2.default]);
+// app.use("/google", [indexRouter, authRouter]);
 app.use("/users", auth_1.auth, users_1.default);
 app.use("/users/notes", note_1.default);
 // app.use("/homePage", homePage);

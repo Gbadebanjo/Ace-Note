@@ -82,6 +82,7 @@ declare global {
   namespace Express {
     interface Request {
       userKey?: any;
+      user?: any;
     }
   }
 }
