@@ -1,0 +1,9 @@
+version: "3"
+services:
+  Ace-Note_app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: "gbadebanjo/ace-note:latest"
+    ports:
+      - "8000:8000"

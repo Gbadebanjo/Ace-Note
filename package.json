@@ -5,7 +5,8 @@
   "scripts": {
     "startdev": "nodemon ./bin/www",
     "start": "node ./bin/www",
-    "build": "tsc -w"
+    "build": "tsc -w",
+    "compile": "tsc"
   },
   "dependencies": {
     "@types/cookie-session": "^2.0.45",
