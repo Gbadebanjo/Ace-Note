@@ -2,13 +2,13 @@ FROM node:14-alpine
 
 ENV NODE_ENV=production
 
-ENV PORT = 8000
+ENV PORT=8000
 
 WORKDIR /app
 
 COPY  . .
 
-RUN yarn install
+RUN yarn
 
 # Install TypeScript globally
 RUN yarn global add typescript
