@@ -15,20 +15,20 @@ const note_1 = require("../model/note");
 function viewNote(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('calling viewNote function');
+            console.log("calling viewNote function");
             // const note = await Note.findOne( { id: req.params })
             const note = yield note_1.Note.findByPk(req.params.id);
             if (note) {
-                res.render('view-note', {
+                res.render("view-note", {
                     userId: note.dataValues.userId,
                     noteID: req.params.id,
                     note,
-                    id: note.dataValues.id
+                    id: note.dataValues.id,
                     // layout: '../views/view-note',
                 });
             }
             else {
-                res.status(404).json({ message: 'Note not found' });
+                res.status(404).json({ message: "Note not found" });
             }
         }
         catch (error) {
@@ -37,13 +37,12 @@ function viewNote(req, res) {
     });
 }
 exports.viewNote = viewNote;
-;
 //Create note request
 function createNote(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('calling createNote fxn');
-        if (req.method === 'GET')
-            return res.render('create-note');
+        console.log("calling createNote fxn");
+        if (req.method === "GET")
+            return res.render("create-note");
         try {
             // To get id of user creating note
             const verified = req.userKey;
@@ -84,7 +83,7 @@ function updateNote(req, res) {
         const update = req.body;
         if (note) {
             Object.assign(note, Object.assign(Object.assign({}, note), update));
-            console.log('updated note: ', note);
+            console.log("updated note: ", note);
             yield note.save();
             return res.redirect("/users/dashboard");
         }
@@ -97,7 +96,7 @@ exports.updateNote = updateNote;
 // Delete request
 function deleteNote(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('calling delete');
+        console.log("calling delete");
         const id = req.params.id;
         const note = yield note_1.Note.findOne({ where: { id: id } });
         if (note) {

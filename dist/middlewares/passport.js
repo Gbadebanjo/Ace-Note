@@ -6,8 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.passportSetup = void 0;
 const passport_1 = __importDefault(require("passport"));
 const user_1 = require("../model/user");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const uuid_1 = require("uuid");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const callbackURL = process.env.GOOLE_REDIRECT_URL || "http://localhost:3000/auth/google/redirect";
 // serialize user
 passport_1.default.serializeUser((user, done) => {
     done(null, user.id);
@@ -22,7 +23,7 @@ const passportSetup = () => {
     passport_1.default.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/redirect",
+        callbackURL: callbackURL,
     }, (accessToken, refreshToken, profile, done) => {
         try {
             //Check if user already exists in our db with the given profile ID

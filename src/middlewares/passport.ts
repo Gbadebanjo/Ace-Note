@@ -1,25 +1,22 @@
-import express from "express";
-import cookieSession from "cookie-session";
 import passport from "passport";
 import { User } from "../model/user";
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
 import { v4 as uuidv4 } from "uuid";
-
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const callbackURL =
+  process.env.GOOLE_REDIRECT_URL ||
+  "http://localhost:3000/auth/google/redirect";
 
 // serialize user
 passport.serializeUser((user: any, done: any) => {
-    done(null, user.id);
-    });
-
-  
-// deserialize user
-passport.deserializeUser((id: any, done: any) => {
-    User.findByPk(id).then((user: any) => {
-        done(null, user);
-    });
+  done(null, user.id);
 });
 
-
+// deserialize user
+passport.deserializeUser((id: any, done: any) => {
+  User.findByPk(id).then((user: any) => {
+    done(null, user);
+  });
+});
 
 export const passportSetup = () => {
   passport.use(
@@ -27,7 +24,7 @@ export const passportSetup = () => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/redirect",
+        callbackURL: callbackURL,
       },
       (accessToken: any, refreshToken: any, profile: any, done: any) => {
         try {
@@ -63,5 +60,3 @@ export const passportSetup = () => {
     )
   );
 };
-
-
